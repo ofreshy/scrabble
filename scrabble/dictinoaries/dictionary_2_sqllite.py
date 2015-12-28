@@ -2,17 +2,20 @@
 from os import path
 import sqlite3
 
+from scrabble.dictinoaries.dictionary_builder import clean_word_stream
+
 CUR_DIR = path.dirname(path.abspath(__file__))
 
 
 class Dictionary(object):
     @classmethod
-    def make(cls, word_stream):
+    def make(cls, word_stream, db_name="words.sqlite"):
         """
         :param word_stream: clean stream of words to store. case sensitive !
+        :param db_name: optional db_name
         :return: an instance of this dictionary with the words stored
         """
-        word_db_file_location = path.join(path.dirname(CUR_DIR), "temp", "words.sqlite")
+        word_db_file_location = path.join(path.dirname(CUR_DIR), "temp", db_name)
         conn = sqlite3.connect(word_db_file_location)
         with conn:
             # Unique will create an index on the column as per
@@ -23,7 +26,7 @@ class Dictionary(object):
                     word   TEXT UNIQUE
                 );
             ''')
-            for word in word_stream:
+            for word in clean_word_stream(word_stream):
                 conn.execute('''INSERT OR IGNORE INTO Words (word) VALUES ( ? )''', (word, ))
 
         return cls(conn)
@@ -37,17 +40,12 @@ class Dictionary(object):
             result = self._conn.execute(stmt, (item, ))
         return result.fetchone()[0] == 1
 
+    def __len__(self):
+        stmt = "SELECT count(*) FROM Words"
+        with self._conn:
+            result = self._conn.execute(stmt)
+        return result.fetchone()[0]
 
-# TODO move this to a test class
-def test():
-    words = ['CAT', 'I', 'TOMORROW']
-
-    model = Dictionary.make(words)
-
-    assert 'CAT' in model
-    assert 'I' in model
-    assert 'TOMORROW' in model
-    assert 'C' not in model
-
-if __name__ == '__main__':
-    test()
+    def __del__(self):
+        if self._conn:
+            self._conn.close()

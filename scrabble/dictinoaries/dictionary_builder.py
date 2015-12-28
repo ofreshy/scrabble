@@ -1,3 +1,4 @@
+# TODO find a way to clean word as a wrapper
 
 
 def clean_word_stream(word_stream):
@@ -15,12 +16,6 @@ def build_model(file_name, make_func):
         model = make_func(clean_word_stream(f))
     return model
 
-
-if __name__ == '__main__':
-    from scrubble.dictinoaries.dictionary_2_sqllite import Dictionary
-    file_name = 'data/huge.txt'
-    m = build_model(file_name, Dictionary.make)
-    assert 'CAT' in m
 
 
 
