@@ -2,7 +2,7 @@
 from os import path
 import sqlite3
 
-from scrabble.dictinoaries.dictionary_builder import clean_word_stream
+from scrabble.dictionaries.dictionary_builder import clean_word_stream
 
 CUR_DIR = path.dirname(path.abspath(__file__))
 

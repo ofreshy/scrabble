@@ -1,6 +1,6 @@
 # Simplest model of them all, in memory set
 
-from scrabble.dictinoaries.dictionary_builder import clean_word_stream
+from scrabble.dictionaries.dictionary_builder import clean_word_stream
 
 
 class Dictionary(object):

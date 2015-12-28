@@ -1,7 +1,7 @@
 
 from testscenarios import TestWithScenarios
 
-from scrabble.dictinoaries import dictionary_1_set, dictionary_2_sqllite
+from scrabble.dictionaries import dictionary_1_set, dictionary_2_sqllite
 
 
 def make_dictionary_sqllite():
