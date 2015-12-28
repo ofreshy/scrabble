@@ -1,4 +1,8 @@
-# Use sqllite DB to store the words
+"""
+Use sqllite DB to store the words
+"""
+
+from functools import lru_cache
 from os import path
 import sqlite3
 
@@ -34,6 +38,7 @@ class Dictionary(object):
     def __init__(self, conn):
         self._conn = conn
 
+    @lru_cache(2000)
     def __contains__(self, item):
         stmt = "SELECT count(*) FROM Words WHERE word = ?"
         with self._conn:
@@ -49,3 +54,10 @@ class Dictionary(object):
     def __del__(self):
         if self._conn:
             self._conn.close()
+
+
+if __name__ == "__main__":
+    dictionary = Dictionary.make(['CAT'], "test.sqlite")
+    assert 'CAT' in dictionary
+    assert 'CAT' in dictionary
+    assert 'CAT' in dictionary
