@@ -28,19 +28,14 @@ class TestDictionaries(TestWithScenarios):
 
         dictionary = self.factory_func(words)
 
-        self.assertEquals(len(dictionary), 3, "dictionary length")
-        for word in words:
-            self.assertTrue(word in dictionary, "missing word %s " % word)
+        self.assertWordsIn(words, dictionary)
 
     def test_words_are_not_duplicated(self):
         words = ['CAT', 'CATS', 'TOMORROW']
-        duplicates = words
 
-        dictionary = self.factory_func(words + duplicates)
+        dictionary = self.factory_func(words * 2)
 
-        self.assertEquals(len(dictionary), len(words), "dictionary length")
-        for word in words:
-            self.assertTrue(word in dictionary, "missing word %s " % word)
+        self.assertWordsIn(words, dictionary)
 
     def test_that_non_alpha_numeric_words_are_removed(self):
         words = ['CAT', 'CATS', 'TOMORROW']
@@ -48,11 +43,8 @@ class TestDictionaries(TestWithScenarios):
 
         dictionary = self.factory_func(words + non_alpha_numeric_words)
 
-        self.assertEquals(len(dictionary), len(words), "dictionary length")
-        for word in words:
-            self.assertTrue(word in dictionary, "missing word %s " % word)
-        for word in non_alpha_numeric_words:
-            self.assertFalse(word in dictionary, "extra word %s " % word)
+        self.assertWordsIn(words, dictionary)
+        self.assertWordsOut(non_alpha_numeric_words, dictionary)
 
     def test_that_white_spaces_are_removed(self):
         words = ['NEWLINE\n', 'SPACERIGHT ', ' SPACEBOTH ', '  TAB']
@@ -60,9 +52,19 @@ class TestDictionaries(TestWithScenarios):
 
         dictionary = self.factory_func(words)
 
-        self.assertEquals(len(dictionary), len(words), "dictionary length")
-        for word in expected_words:
-            self.assertTrue(word in dictionary, "missing word %s " % word)
+        self.assertWordsIn(expected_words, dictionary)
+
+    def assertWordsIn(self, words, dictionary):
+        expected = {word: True for word in words}
+        actual = {word: word in dictionary for word in words}
+        self.assertEquals(expected, actual)
+
+    def assertWordsOut(self, words, dictionary):
+        expected = {word: False for word in words}
+        actual = {word: word in dictionary for word in words}
+        self.assertEquals(expected, actual)
+
+
 
 
 
