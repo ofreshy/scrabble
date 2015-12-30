@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import Counter, namedtuple
 
 """
 2 blank tiles (scoring 0 points)
@@ -43,13 +43,19 @@ TILES = (
     Tile(char='*', freq=2, value=0),
 )
 
-assert len(set(TILES)) == 27
-
-
 LETTERS = tuple([t.char for t in TILES if t.char != '*'])
+FREQ = Counter({t.char: t.freq for t in TILES})
+SCORER = Counter({t.char: t.value for t in TILES})
+
+# 27 tile types
+assert len(set(TILES)) == 27
+# 100 tiles in total
+assert sum([t.freq for t in TILES]) == 100
+# 187 points from tiles
+assert sum([t.freq * t.value for t in TILES]) == 187
+# 26 letters
 assert len(set(LETTERS)) == 26
 
 
-SCORER = {t.char: t.value for t in TILES}
 
 
